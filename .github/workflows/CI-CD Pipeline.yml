@@ -46,14 +46,16 @@ jobs:
       #     -d '{"content": "Deployment to '${{ github.ref }}' was successful. Image: my-app:'${{ github.sha }}'"}'
 
       - name: Test message
-        if: success()
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_CHANNEL_ID: ${{ secrets.DISCORD_CHANNEL_ID }}
         run: |
           curl -v \
-          -H "Authorization: Bot ${{ secrets.DISCORD_BOT_TOKEN }}" \
+          -H "Authorization: Bot $DISCORD_BOT_TOKEN" \
           -H "User-Agent: myBotThing (http://some.url, v0.1)" \
           -H "Content-Type: application/json" \
           -X POST \
           -d '{"content":"Deployment to '${{ github.ref }}' was successful. Image: my-app:'${{ github.sha }}'"}' \
-          https://discordapp.com/api/channels/${{ secrets.DISCORD_CHANNEL_ID }}/messages
+          https://discordapp.com/api/channels/$DISCORD_CHANNEL_ID/messages
           
     
