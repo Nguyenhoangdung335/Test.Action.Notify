@@ -37,12 +37,23 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.]
 
-      - name: Send Discord Bot Alert on Deployment Success
+      # - name: Send Discord Bot Alert on Deployment Success
+      #   if: failure()
+      #   run: |
+      #     curl -X POST "https://discord.com/api/v9/channels/${{ secrets.DISCORD_CHANNEL_ID }}/messages" \
+      #     -H "Authorization: Bot ${{ secrets.DISCORD_BOT_TOKEN }}" \
+      #     -H "Content-Type: application/json" \
+      #     -d '{"content": "Deployment to '${{ github.ref }}' was successful. Image: my-app:'${{ github.sha }}'"}'
+
+      - name: Test message
         if: success()
         run: |
-          curl -X POST "https://discord.com/api/v9/channels/${{ secrets.DISCORD_CHANNEL_ID }}/messages" \
+          curl -v \
           -H "Authorization: Bot ${{ secrets.DISCORD_BOT_TOKEN }}" \
+          -H "User-Agent: myBotThing (http://some.url, v0.1)" \
           -H "Content-Type: application/json" \
-          -d '{"content": "Deployment to '${{ github.ref }}' was successful. Image: my-app:'${{ github.sha }}'"}'
+          -X POST \
+          -d '{"content":"Deployment to '${{ github.ref }}' was successful. Image: my-app:'${{ github.sha }}'"}' \
+          https://discordapp.com/api/channels/${{ secrets.DISCORD_CHANNEL_ID }}/messages
           
     
